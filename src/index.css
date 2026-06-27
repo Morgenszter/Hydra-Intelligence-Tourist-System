@@ -1,0 +1,206 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  background-color: #000000 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  overflow: hidden !important;
+}
+
+#root {
+  width: 100vw !important;
+  height: 100vh !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: #000000 !important;
+}
+
+@layer base {
+  body {
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    color: #f0fbfb;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+}
+
+@layer components {
+  .main-container {
+    max-width: 1600px;
+    width: 95vw;
+    height: 90vh;
+    min-height: 850px;
+    margin: 0 auto;
+    position: relative;
+    background-image: url('/lucid-origin_Prompt_A_seamless_2D_tactical_HUD_UI_texture_high-tech_sci-fi_military_terminal_-0.jpg');
+    background-size: 100% 100% !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+    border: 1px solid #005f73;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: brightness(25%) contrast(140%) saturate(60%);
+    -webkit-backdrop-filter: brightness(25%) contrast(140%) saturate(60%);
+    background: rgba(4, 10, 12, 0.55);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .main-container > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  .bg-dark-panel {
+    background: rgba(3, 7, 9, 0.94);
+  }
+
+  .text-alpharius-cyan {
+    color: #f0fbfb;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.95), -1px -1px 1px rgba(0, 0, 0, 0.9) !important;
+  }
+
+  .text-muted-cyan {
+    color: #aae2e2;
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.95) !important;
+  }
+
+  .text-gold-accent {
+    color: #39ff14;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.95), 0 0 8px rgba(57, 255, 20, 0.5) !important;
+    font-weight: 700;
+  }
+
+  .hydra-panel {
+    background: rgba(3, 7, 9, 0.94);
+    border: 1px solid #005f73;
+  }
+
+  .hydra-border {
+    border: 1px solid #005f73;
+  }
+
+  .hydra-text {
+    color: #f0fbfb;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.95), -1px -1px 1px rgba(0, 0, 0, 0.9) !important;
+  }
+
+  .hydra-neon {
+    color: #39ff14;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.95), 0 0 8px rgba(57, 255, 20, 0.5) !important;
+  }
+
+  .hydra-tab-active {
+    background: rgba(0, 95, 115, 0.3);
+    border-bottom: 2px solid #39ff14;
+    color: #39ff14;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.95) !important;
+    font-family: 'Orbitron', sans-serif;
+  }
+
+  .hydra-tab-inactive {
+    background: transparent;
+    border-bottom: 2px solid #005f73;
+    color: #aae2e2;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.95) !important;
+    font-family: 'Orbitron', sans-serif;
+  }
+
+  .hydra-tab-inactive:hover {
+    background: rgba(0, 95, 115, 0.15);
+    color: #39ff14;
+  }
+
+  .deal-highlight {
+    animation: pulseNeon 2s ease-in-out infinite;
+    border: 2px solid #39ff14;
+  }
+
+  .scrollbar-hydra::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-hydra::-webkit-scrollbar-track {
+    background: #040b0e;
+  }
+
+  .scrollbar-hydra::-webkit-scrollbar-thumb {
+    background: #005f73;
+    border-radius: 3px;
+  }
+
+  .telemetry-item {
+    position: relative;
+    padding-left: 12px;
+  }
+
+  .telemetry-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background: #39ff14;
+    border-radius: 50%;
+    animation: blink 1.5s step-end infinite;
+  }
+
+  .card-block {
+    background: rgba(3, 7, 9, 0.94);
+    border: 1px solid #005f73;
+    padding: 12px;
+  }
+
+  .selected-item {
+    background: rgba(0, 95, 115, 0.15) !important;
+    border: 1px solid #39ff14 !important;
+  }
+
+  .neon-red-line {
+    stroke: #ff0033;
+    stroke-width: 3;
+    filter: drop-shadow(0 0 4px #ff0033) drop-shadow(0 0 8px #ff0033);
+    fill: none;
+  }
+
+  .leaflet-container {
+    background: #040b0e !important;
+    font-family: 'Share Tech Mono', monospace !important;
+  }
+
+  .leaflet-popup-content-wrapper {
+    background: rgba(3, 7, 9, 0.96) !important;
+    border: 1px solid #005f73 !important;
+    color: #f0fbfb !important;
+    border-radius: 2px !important;
+  }
+
+  .leaflet-popup-tip {
+    background: #005f73 !important;
+  }
+}
