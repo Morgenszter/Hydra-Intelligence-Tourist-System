@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Shield,
   Route,
@@ -10,7 +10,10 @@ import {
   FolderOpen,
   Zap,
 } from 'lucide-react';
-import { CountryKey, countryPricing, countryNames, countryCities, tabLabels } from './data/pricingData.ts';
+
+// BEZBŁĘDNY IMPORT (Vite automatycznie rozwiąże plik .ts z folderu data)
+import { CountryKey, countryPricing, countryCities, tabLabels } from './data/pricingData';
+
 import HydraIcon from './components/HydraIcon';
 import TelemetryBar from './components/TelemetryBar';
 import ControlPanel from './components/ControlPanel';
@@ -34,7 +37,6 @@ const tabs: { key: TabKey; icon: React.ReactNode }[] = [
   { key: 'expedition', icon: <FolderOpen size={14} /> },
 ];
 
-// Pre-select all "average" items by default
 function getDefaultSelected(country: CountryKey): Set<string> {
   const data = countryPricing[country];
   const selected = new Set<string>();
@@ -47,7 +49,7 @@ function getDefaultSelected(country: CountryKey): Set<string> {
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabKey>('transport');
   const [country, setCountry] = useState<CountryKey>('czechy');
-  const [city, setCity] = useState<string>(countryCities.czechy[0].name);
+  const [city, setCity] = useState<string>(countryCities.czechy.name);
   const [duration, setDuration] = useState<number>(7);
   const [agents, setAgents] = useState<number>(2);
   const [transport, setTransport] = useState<string>('Samochód');
@@ -60,10 +62,9 @@ export default function App() {
 
   const currentData = countryPricing[country];
 
-  // Reset selected items when country changes, pre-select average tier
   useEffect(() => {
     setSelectedItems(getDefaultSelected(country));
-    setCity(countryCities[country][0].name);
+    setCity(countryCities[country].name);
   }, [country]);
 
   const handleToggleItem = (name: string) => {
@@ -78,14 +79,14 @@ export default function App() {
   const allCustomEmpty = customLimits.cheapest === null && customLimits.average === null && customLimits.expensive === null;
 
   return (
-    <div className="main-container">
-      {/* Telemetry Bar */}
+    <div className="w-full min-h-screen bg-[#030708] text-[#f0fbfb] p-4 md:p-8 flex flex-col items-center">
+      {/* Pasek Telemetrii */}
       <TelemetryBar />
 
-      {/* Header */}
-      <header className="w-full border-b border-[#005f73] bg-dark-panel py-4 shrink-0">
-        <div className="max-w-[1600px] mx-auto flex flex-col items-center gap-2">
-          <HydraIcon size={80} />
+      {/* Nagłówek HUD */}
+      <header className="w-full max-w-[1600px] border border-[#005f73] bg-dark-panel py-4 rounded-sm mb-4 shadow-[0_0_15px_rgba(0,95,115,0.3)]">
+        <div className="flex flex-col items-center gap-2">
+          <HydraIcon size={64} />
           <div className="flex items-center gap-3">
             <Shield size={18} className="text-gold-accent" />
             <h1 className="text-[22px] font-bold uppercase tracking-[0.25em] text-gold-accent font-orbitron">
@@ -99,162 +100,148 @@ export default function App() {
         </div>
       </header>
 
-      {/* Control Panel */}
-      <ControlPanel
-        country={country}
-        setCountry={setCountry}
-        city={city}
-        setCity={setCity}
-        duration={duration}
-        setDuration={setDuration}
-        agents={agents}
-        setAgents={setAgents}
-        transport={transport}
-        setTransport={setTransport}
-        customLimits={customLimits}
-        setCustomLimits={setCustomLimits}
-      />
-
-      {/* Autonomic Decision Banner */}
-      {allCustomEmpty && (
-        <div className="w-full max-w-[1600px] mx-auto mt-2 px-6">
-          <div className="flex items-center gap-2 px-3 py-1 bg-[rgba(57,255,20,0.05)] border border-[#39ff14]/30 rounded-sm">
-            <Zap size={12} className="text-gold-accent" />
-            <span className="text-[10px] uppercase tracking-wider text-gold-accent font-orbitron">
-              [AUTONOMICZNA DECYZJA HYDRY: AKTYWNA]
-            </span>
-          </div>
-        </div>
-      )}
-
-      {/* Budget Total (only on transport tab) */}
-      {activeTab === 'transport' && (
-        <BudgetTotal country={country} duration={duration} agents={agents} selectedItems={selectedItems} />
-      )}
-
-      {/* Deal Finder */}
-      <DealFinder country={country} duration={duration} agents={agents} />
-
-      {/* Main Dashboard */}
-      <main className="flex-1 w-full max-w-[1600px] mx-auto px-6 py-4 min-h-0 flex flex-col">
-        <div className="hydra-panel rounded-sm flex flex-col flex-1 min-h-0">
-          {/* Tab Bar */}
-          <div className="flex border-b border-[#005f73] shrink-0">
-            {tabs.map((t) => (
-              <button
-                key={t.key}
-                onClick={() => setActiveTab(t.key)}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[11px] uppercase tracking-widest font-bold transition-all duration-200 cursor-pointer font-orbitron ${
-                  activeTab === t.key ? 'hydra-tab-active' : 'hydra-tab-inactive'
-                }`}
-              >
-                {t.icon}
-                {tabLabels[t.key]}
-              </button>
-            ))}
-          </div>
-
-          {/* Tab Content */}
-          <div className="flex-1 p-4 overflow-y-auto scrollbar-hydra min-h-0">
-            {activeTab === 'transport' && (
-              <TabContent
-                sectionKey="transport"
-                data={currentData.transport}
-                duration={duration}
-                agents={agents}
-                selectedItems={selectedItems}
-                onToggleItem={handleToggleItem}
-              />
-            )}
-            {activeTab === 'food' && (
-              <TabContent
-                sectionKey="food"
-                data={currentData.food}
-                duration={duration}
-                agents={agents}
-                selectedItems={selectedItems}
-                onToggleItem={handleToggleItem}
-              />
-            )}
-            {activeTab === 'snacks' && (
-              <TabContent
-                sectionKey="snacks"
-                data={currentData.snacks}
-                duration={duration}
-                agents={agents}
-                selectedItems={selectedItems}
-                onToggleItem={handleToggleItem}
-              />
-            )}
-            {activeTab === 'accommodation' && (
-              <TabContent
-                sectionKey="accommodation"
-                data={currentData.accommodation}
-                duration={duration}
-                agents={agents}
-                selectedItems={selectedItems}
-                onToggleItem={handleToggleItem}
-              />
-            )}
-            {activeTab === 'attractions' && (
-              <TabContent
-                sectionKey="attractions"
-                data={currentData.attractions}
-                duration={duration}
-                agents={agents}
-                selectedItems={selectedItems}
-                onToggleItem={handleToggleItem}
-              />
-            )}
-            {activeTab === 'map' && (
-              <TacticalMap country={country} city={city} selectedItems={selectedItems} />
-            )}
-            {activeTab === 'expedition' && (
-              <ExpeditionNotepad country={country} />
-            )}
-          </div>
-        </div>
-      </main>
-
-      {/* Bottom Utility Grid */}
-      <div className="w-full max-w-[1600px] mx-auto px-6 pb-4 shrink-0">
-        <div className="grid grid-cols-3 gap-4">
-          {/* Module 1: Packing List (simplified view) */}
-          <div className="card-block rounded-sm flex flex-col gap-2">
-            <div className="flex items-center gap-2 pb-1 border-b border-[#005f73]/30">
+      {/* Główny układ ekranów */}
+      <div className="w-full max-w-[1600px] flex flex-col gap-4">
+        
+        {/* Panel Sterowania Formularzami */}
+        <section className="border border-[#005f73] bg-dark-panel p-4 rounded-sm shadow-[0_0_15px_rgba(0,95,115,0.2)]">
+          <ControlPanel
+            country={country}
+            setCountry={setCountry}
+            city={city}
+            setCity={setCity}
+            duration={duration}
+            setDuration={setDuration}
+            agents={agents}
+            setAgents={setAgents}
+            transport={transport}
+            setTransport={setTransport}
+            customLimits={customLimits}
+            setCustomLimits={setCustomLimits}
+          />
+          
+          {allCustomEmpty && (
+            <div className="mt-3 flex items-center gap-2 px-3 py-1 bg-[rgba(57,255,20,0.05)] border border-[#39ff14]/30 rounded-sm w-fit">
               <Zap size={12} className="text-gold-accent" />
-              <span className="text-[10px] uppercase tracking-wider text-gold-accent font-bold font-orbitron">
-                DYNAMICZNA LISTA PAKOWANIA
+              <span className="text-[10px] uppercase tracking-wider text-gold-accent font-orbitron">
+                [AUTONOMICZNA DECYZJA HYDRY: AKTYWNA]
               </span>
             </div>
-            <span className="text-[11px] text-muted-cyan font-tech">
-              Pełna lista dostępna w zakładce EKSPEDYCJA I NOTATNIK. Automatyczna iniekcja sprzętu specjalistycznego dla: {countryNames[country]}.
-            </span>
-          </div>
+          )}
+        </section>
 
-          {/* Module 2: Currency Calculator */}
-          <div className="card-block rounded-sm">
-            <CurrencyCalculator />
-          </div>
+        {/* Nawigacja 7 Kart */}
+        <nav className="flex flex-wrap border border-[#005f73] bg-dark-panel rounded-sm overflow-hidden shadow-[0_0_15px_rgba(0,95,115,0.2)]">
+          {tabs.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => setActiveTab(t.key)}
+              className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-3 text-[11px] uppercase tracking-widest font-bold transition-all duration-200 cursor-pointer font-orbitron border-r border-[#005f73] last:border-0 ${
+                activeTab === t.key 
+                  ? 'bg-[#005f73]/40 text-[#39ff14] border-b-2 border-b-[#39ff14]' 
+                  : 'bg-transparent text-[#8ec3c3] hover:bg-[#005f73]/10'
+              }`}
+            >
+              {t.icon}
+              {tabLabels[t.key]}
+            </button>
+          ))}
+        </nav>
 
-          {/* Module 3: Rules Assistant */}
-          <div className="card-block rounded-sm">
+        {/* PANELE JAKO OSOBNE EKRANY OPERACYJNE */}
+        <section className="w-full border border-[#005f73] bg-dark-panel rounded-sm p-6 shadow-[0_0_20px_rgba(0,95,115,0.3)] min-h-[500px] flex flex-col">
+          
+          {/* KARTA 1: TRANSPORT */}
+          {activeTab === 'transport' && (
+            <div className="flex flex-col gap-6 flex-1">
+              <BudgetTotal country={country} duration={duration} agents={agents} selectedItems={selectedItems} />
+              <DealFinder country={country} duration={duration} agents={agents} />
+              <div className="border-t border-[#005f73]/40 pt-4">
+                <TabContent
+                  sectionKey="transport"
+                  data={currentData.transport}
+                  duration={duration}
+                  agents={agents}
+                  selectedItems={selectedItems}
+                  onToggleItem={handleToggleItem}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* KARTA 2: JEDZENIE I SKLEPY */}
+          {activeTab === 'food' && (
+            <TabContent
+              sectionKey="food"
+              data={currentData.food}
+              duration={duration}
+              agents={agents}
+              selectedItems={selectedItems}
+              onToggleItem={handleToggleItem}
+            />
+          )}
+
+          {/* KARTA 3: LOKALNE SMAKOŁYKI */}
+          {activeTab === 'snacks' && (
+            <TabContent
+              sectionKey="snacks"
+              data={currentData.snacks}
+              duration={duration}
+              agents={agents}
+              selectedItems={selectedItems}
+              onToggleItem={handleToggleItem}
+            />
+          )}
+
+          {/* KARTA 4: NOCLEG */}
+          {activeTab === 'accommodation' && (
+            <TabContent
+              sectionKey="accommodation"
+              data={currentData.accommodation}
+              duration={duration}
+              agents={agents}
+              selectedItems={selectedItems}
+              onToggleItem={handleToggleItem}
+            />
+          )}
+
+          {/* KARTA 5: ATRAKCJE */}
+          {activeTab === 'attractions' && (
+            <TabContent
+              sectionKey="attractions"
+              data={currentData.attractions}
+              duration={duration}
+              agents={agents}
+              selectedItems={selectedItems}
+              onToggleItem={handleToggleItem}
+            />
+          )}
+
+          {/* KARTA 6: PANORAMICZNA MAPA (H-[650PX]) */}
+          {activeTab === 'map' && (
+            <div className="w-full h-[650px] rounded-sm overflow-hidden border border-[#005f73]/60 relative flex flex-col flex-1">
+              <TacticalMap country={country} city={city} selectedItems={selectedItems} />
+            </div>
+          )}
+
+          {/* KARTA 7: NOTATNIK EXPECYCJI (LOCALSTORAGE) */}
+          {activeTab === 'expedition' && (
+            <div className="w-full flex-1 flex flex-col">
+              <ExpeditionNotepad country={country} />
+            </div>
+          )}
+        </section>
+
+        {/* Globalne Narzędzia (Na samym dole struktury) */}
+        <footer className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2 pb-8">
+          <div className="border border-[#005f73] bg-dark-panel p-5 rounded-sm shadow-[0_0_15px_rgba(0,95,115,0.2)]">
+            <CurrencyCalculator country={country} />
+          </div>
+          <div className="border border-[#005f73] bg-dark-panel p-5 rounded-sm shadow-[0_0_15px_rgba(0,95,115,0.2)]">
             <RulesAssistant country={country} />
           </div>
-        </div>
+        </footer>
       </div>
-
-      {/* Footer */}
-      <footer className="w-full border-t border-[#005f73] bg-dark-panel py-2 shrink-0">
-        <div className="max-w-[1600px] mx-auto flex items-center justify-between px-6">
-          <span className="text-[9px] uppercase tracking-wider text-muted-cyan font-orbitron">
-            HYDRA-INTELLIGENCE // SYSTEM KLASYFIKACJI: TAJNY
-          </span>
-          <span className="text-[9px] uppercase tracking-wider text-muted-cyan font-orbitron">
-            {new Date().toLocaleDateString('pl-PL')} // {new Date().toLocaleTimeString('pl-PL')}
-          </span>
-        </div>
-      </footer>
     </div>
   );
 }
