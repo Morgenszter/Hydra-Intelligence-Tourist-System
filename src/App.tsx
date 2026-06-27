@@ -10,10 +10,7 @@ import {
   FolderOpen,
   Zap,
 } from 'lucide-react';
-
-// BEZBŁĘDNY IMPORT (Vite automatycznie rozwiąże plik .ts z folderu data)
 import { CountryKey, countryPricing, countryCities, tabLabels } from './data/pricingData';
-
 import HydraIcon from './components/HydraIcon';
 import TelemetryBar from './components/TelemetryBar';
 import ControlPanel from './components/ControlPanel';
@@ -49,7 +46,7 @@ function getDefaultSelected(country: CountryKey): Set<string> {
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabKey>('transport');
   const [country, setCountry] = useState<CountryKey>('czechy');
-  const [city, setCity] = useState<string>(countryCities.czechy.name);
+  const [city, setCity] = useState<string>(countryCities.czechy[0].name);
   const [duration, setDuration] = useState<number>(7);
   const [agents, setAgents] = useState<number>(2);
   const [transport, setTransport] = useState<string>('Samochód');
@@ -64,7 +61,7 @@ export default function App() {
 
   useEffect(() => {
     setSelectedItems(getDefaultSelected(country));
-    setCity(countryCities[country].name);
+    setCity(countryCities[country][0].name);
   }, [country]);
 
   const handleToggleItem = (name: string) => {
@@ -79,12 +76,12 @@ export default function App() {
   const allCustomEmpty = customLimits.cheapest === null && customLimits.average === null && customLimits.expensive === null;
 
   return (
-    <div className="w-full min-h-screen bg-[#030708] text-[#f0fbfb] p-4 md:p-8 flex flex-col items-center">
+    <div className="w-full min-h-screen bg-[#030708] text-[#f0fbfb] p-4 md:p-8 flex flex-col items-center overflow-y-auto">
       {/* Pasek Telemetrii */}
       <TelemetryBar />
 
       {/* Nagłówek HUD */}
-      <header className="w-full max-w-[1600px] border border-[#005f73] bg-dark-panel py-4 rounded-sm mb-4 shadow-[0_0_15px_rgba(0,95,115,0.3)]">
+      <header className="w-full max-w-[1600px] border border-[#005f73] bg-dark-panel py-4 rounded-sm mb-4 shadow-[0_0_15px_rgba(0,95,115,0.3)] shrink-0">
         <div className="flex flex-col items-center gap-2">
           <HydraIcon size={64} />
           <div className="flex items-center gap-3">
@@ -100,11 +97,11 @@ export default function App() {
         </div>
       </header>
 
-      {/* Główny układ ekranów */}
+      {/* Główny układ danych */}
       <div className="w-full max-w-[1600px] flex flex-col gap-4">
         
         {/* Panel Sterowania Formularzami */}
-        <section className="border border-[#005f73] bg-dark-panel p-4 rounded-sm shadow-[0_0_15px_rgba(0,95,115,0.2)]">
+        <section className="border border-[#005f73] bg-dark-panel p-4 rounded-sm shadow-[0_0_15px_rgba(0,95,115,0.2)] shrink-0">
           <ControlPanel
             country={country}
             setCountry={setCountry}
@@ -130,8 +127,8 @@ export default function App() {
           )}
         </section>
 
-        {/* Nawigacja 7 Kart */}
-        <nav className="flex flex-wrap border border-[#005f73] bg-dark-panel rounded-sm overflow-hidden shadow-[0_0_15px_rgba(0,95,115,0.2)]">
+        {/* Nawigacja 7 Kart na Samej Górze */}
+        <nav className="flex flex-wrap border border-[#005f73] bg-dark-panel rounded-sm overflow-hidden shadow-[0_0_15px_rgba(0,95,115,0.2)] shrink-0">
           {tabs.map((t) => (
             <button
               key={t.key}
@@ -148,10 +145,10 @@ export default function App() {
           ))}
         </nav>
 
-        {/* PANELE JAKO OSOBNE EKRANY OPERACYJNE */}
-        <section className="w-full border border-[#005f73] bg-dark-panel rounded-sm p-6 shadow-[0_0_20px_rgba(0,95,115,0.3)] min-h-[500px] flex flex-col">
+        {/* CAŁKOWICIE IZOLOWANE EKRANY OPERACYJNE (WYSYŁANE NA OSOBNE WIDOKI) */}
+        <section className="w-full border border-[#005f73] bg-dark-panel rounded-sm p-6 shadow-[0_0_20px_rgba(0,95,115,0.3)] min-h-[450px] flex flex-col">
           
-          {/* KARTA 1: TRANSPORT */}
+          {/* EKRAN 1: TRANSPORT */}
           {activeTab === 'transport' && (
             <div className="flex flex-col gap-6 flex-1">
               <BudgetTotal country={country} duration={duration} agents={agents} selectedItems={selectedItems} />
@@ -169,62 +166,70 @@ export default function App() {
             </div>
           )}
 
-          {/* KARTA 2: JEDZENIE I SKLEPY */}
+          {/* EKRAN 2: JEDZENIE I SKLEPY */}
           {activeTab === 'food' && (
-            <TabContent
-              sectionKey="food"
-              data={currentData.food}
-              duration={duration}
-              agents={agents}
-              selectedItems={selectedItems}
-              onToggleItem={handleToggleItem}
-            />
+            <div className="flex flex-col gap-4 flex-1">
+              <TabContent
+                sectionKey="food"
+                data={currentData.food}
+                duration={duration}
+                agents={agents}
+                selectedItems={selectedItems}
+                onToggleItem={handleToggleItem}
+              />
+            </div>
           )}
 
-          {/* KARTA 3: LOKALNE SMAKOŁYKI */}
+          {/* EKRAN 3: LOKALNE SMAKOŁYKI */}
           {activeTab === 'snacks' && (
-            <TabContent
-              sectionKey="snacks"
-              data={currentData.snacks}
-              duration={duration}
-              agents={agents}
-              selectedItems={selectedItems}
-              onToggleItem={handleToggleItem}
-            />
+            <div className="flex flex-col gap-4 flex-1">
+              <TabContent
+                sectionKey="snacks"
+                data={currentData.snacks}
+                duration={duration}
+                agents={agents}
+                selectedItems={selectedItems}
+                onToggleItem={handleToggleItem}
+              />
+            </div>
           )}
 
-          {/* KARTA 4: NOCLEG */}
+          {/* EKRAN 4: NOCLEG */}
           {activeTab === 'accommodation' && (
-            <TabContent
-              sectionKey="accommodation"
-              data={currentData.accommodation}
-              duration={duration}
-              agents={agents}
-              selectedItems={selectedItems}
-              onToggleItem={handleToggleItem}
-            />
+            <div className="flex flex-col gap-4 flex-1">
+              <TabContent
+                sectionKey="accommodation"
+                data={currentData.accommodation}
+                duration={duration}
+                agents={agents}
+                selectedItems={selectedItems}
+                onToggleItem={handleToggleItem}
+              />
+            </div>
           )}
 
-          {/* KARTA 5: ATRAKCJE */}
+          {/* EKRAN 5: ATRAKCJE */}
           {activeTab === 'attractions' && (
-            <TabContent
-              sectionKey="attractions"
-              data={currentData.attractions}
-              duration={duration}
-              agents={agents}
-              selectedItems={selectedItems}
-              onToggleItem={handleToggleItem}
-            />
+            <div className="flex flex-col gap-4 flex-1">
+              <TabContent
+                sectionKey="attractions"
+                data={currentData.attractions}
+                duration={duration}
+                agents={agents}
+                selectedItems={selectedItems}
+                onToggleItem={handleToggleItem}
+              />
+            </div>
           )}
 
-          {/* KARTA 6: PANORAMICZNA MAPA (H-[650PX]) */}
+          {/* EKRAN 6: DEDYKOWANA MAPA PANORAMICZNA */}
           {activeTab === 'map' && (
             <div className="w-full h-[650px] rounded-sm overflow-hidden border border-[#005f73]/60 relative flex flex-col flex-1">
               <TacticalMap country={country} city={city} selectedItems={selectedItems} />
             </div>
           )}
 
-          {/* KARTA 7: NOTATNIK EXPECYCJI (LOCALSTORAGE) */}
+          {/* EKRAN 7: PAMIĘĆ EXPEDYCJI I NOTATNIK */}
           {activeTab === 'expedition' && (
             <div className="w-full flex-1 flex flex-col">
               <ExpeditionNotepad country={country} />
@@ -232,16 +237,9 @@ export default function App() {
           )}
         </section>
 
-        {/* Globalne Narzędzia (Na samym dole struktury) */}
-        <footer className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2 pb-8">
+        {/* Globalne Narzędzia pomocnicze (Wyciągnięte na sam dół jako niezależny segment) */}
+        <footer className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2 pb-8 shrink-0">
           <div className="border border-[#005f73] bg-dark-panel p-5 rounded-sm shadow-[0_0_15px_rgba(0,95,115,0.2)]">
             <CurrencyCalculator country={country} />
           </div>
           <div className="border border-[#005f73] bg-dark-panel p-5 rounded-sm shadow-[0_0_15px_rgba(0,95,115,0.2)]">
-            <RulesAssistant country={country} />
-          </div>
-        </footer>
-      </div>
-    </div>
-  );
-}
