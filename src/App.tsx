@@ -10,7 +10,7 @@ import {
   FolderOpen,
   Zap,
 } from 'lucide-react';
-import { CountryKey, countryPricing, countryNames, countryCities, tabLabels } from './data/pricingData';
+import { CountryKey, countryPricing, countryNames, countryCities, tabLabels } from './data/pricingData.ts';
 import HydraIcon from './components/HydraIcon';
 import TelemetryBar from './components/TelemetryBar';
 import ControlPanel from './components/ControlPanel';
