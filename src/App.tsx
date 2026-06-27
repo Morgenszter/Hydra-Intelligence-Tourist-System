@@ -34,6 +34,9 @@ const tabs: { key: TabKey; icon: React.ReactNode }[] = [
   { key: 'expedition', icon: <FolderOpen size={14} /> },
 ];
 
+const tabPanelClass =
+  'w-full border border-[#005f73] bg-dark-panel rounded-sm p-6 shadow-[0_0_20px_rgba(0,95,115,0.3)] min-h-fit h-auto';
+
 function getDefaultSelected(country: CountryKey): Set<string> {
   const data = countryPricing[country];
   const selected = new Set<string>();
@@ -77,10 +80,8 @@ export default function App() {
 
   return (
     <div className="w-full min-h-screen bg-[#030708] text-[#f0fbfb] p-4 md:p-8 flex flex-col items-center overflow-y-auto">
-      {/* Pasek Telemetrii */}
       <TelemetryBar />
 
-      {/* Nagłówek HUD */}
       <header className="w-full max-w-[1600px] border border-[#005f73] bg-dark-panel py-4 rounded-sm mb-4 shadow-[0_0_15px_rgba(0,95,115,0.3)] shrink-0">
         <div className="flex flex-col items-center gap-2">
           <HydraIcon size={64} />
@@ -97,10 +98,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* Główny układ danych */}
       <div className="w-full max-w-[1600px] flex flex-col gap-4">
-        
-        {/* Panel Sterowania Formularzami */}
         <section className="border border-[#005f73] bg-dark-panel p-4 rounded-sm shadow-[0_0_15px_rgba(0,95,115,0.2)] shrink-0">
           <ControlPanel
             country={country}
@@ -116,7 +114,7 @@ export default function App() {
             customLimits={customLimits}
             setCustomLimits={setCustomLimits}
           />
-          
+
           {allCustomEmpty && (
             <div className="mt-3 flex items-center gap-2 px-3 py-1 bg-[rgba(57,255,20,0.05)] border border-[#39ff14]/30 rounded-sm w-fit">
               <Zap size={12} className="text-gold-accent" />
@@ -127,15 +125,14 @@ export default function App() {
           )}
         </section>
 
-        {/* Nawigacja 7 Kart na Samej Górze */}
         <nav className="flex flex-wrap border border-[#005f73] bg-dark-panel rounded-sm overflow-hidden shadow-[0_0_15px_rgba(0,95,115,0.2)] shrink-0">
           {tabs.map((t) => (
             <button
               key={t.key}
               onClick={() => setActiveTab(t.key)}
               className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-3 text-[11px] uppercase tracking-widest font-bold transition-all duration-200 cursor-pointer font-orbitron border-r border-[#005f73] last:border-0 ${
-                activeTab === t.key 
-                  ? 'bg-[#005f73]/40 text-[#39ff14] border-b-2 border-b-[#39ff14]' 
+                activeTab === t.key
+                  ? 'bg-[#005f73]/40 text-[#39ff14] border-b-2 border-b-[#39ff14]'
                   : 'bg-transparent text-[#8ec3c3] hover:bg-[#005f73]/10'
               }`}
             >
@@ -145,12 +142,9 @@ export default function App() {
           ))}
         </nav>
 
-        {/* CAŁKOWICIE IZOLOWANE EKRANY OPERACYJNE (WYSYŁANE NA OSOBNE WIDOKI) */}
-        <section className="w-full border border-[#005f73] bg-dark-panel rounded-sm p-6 shadow-[0_0_20px_rgba(0,95,115,0.3)] min-h-[450px] flex flex-col">
-          
-          {/* EKRAN 1: TRANSPORT */}
-          {activeTab === 'transport' && (
-            <div className="flex flex-col gap-6 flex-1">
+        {activeTab === 'transport' && (
+          <section className={tabPanelClass}>
+            <div className="flex flex-col gap-6">
               <BudgetTotal country={country} duration={duration} agents={agents} selectedItems={selectedItems} />
               <DealFinder country={country} duration={duration} agents={agents} />
               <div className="border-t border-[#005f73]/40 pt-4">
@@ -164,82 +158,84 @@ export default function App() {
                 />
               </div>
             </div>
-          )}
+          </section>
+        )}
 
-          {/* EKRAN 2: JEDZENIE I SKLEPY */}
-          {activeTab === 'food' && (
-            <div className="flex flex-col gap-4 flex-1">
-              <TabContent
-                sectionKey="food"
-                data={currentData.food}
-                duration={duration}
-                agents={agents}
-                selectedItems={selectedItems}
-                onToggleItem={handleToggleItem}
-              />
-            </div>
-          )}
+        {activeTab === 'food' && (
+          <section className={tabPanelClass}>
+            <TabContent
+              sectionKey="food"
+              data={currentData.food}
+              duration={duration}
+              agents={agents}
+              selectedItems={selectedItems}
+              onToggleItem={handleToggleItem}
+            />
+          </section>
+        )}
 
-          {/* EKRAN 3: LOKALNE SMAKOŁYKI */}
-          {activeTab === 'snacks' && (
-            <div className="flex flex-col gap-4 flex-1">
-              <TabContent
-                sectionKey="snacks"
-                data={currentData.snacks}
-                duration={duration}
-                agents={agents}
-                selectedItems={selectedItems}
-                onToggleItem={handleToggleItem}
-              />
-            </div>
-          )}
+        {activeTab === 'snacks' && (
+          <section className={tabPanelClass}>
+            <TabContent
+              sectionKey="snacks"
+              data={currentData.snacks}
+              duration={duration}
+              agents={agents}
+              selectedItems={selectedItems}
+              onToggleItem={handleToggleItem}
+            />
+          </section>
+        )}
 
-          {/* EKRAN 4: NOCLEG */}
-          {activeTab === 'accommodation' && (
-            <div className="flex flex-col gap-4 flex-1">
-              <TabContent
-                sectionKey="accommodation"
-                data={currentData.accommodation}
-                duration={duration}
-                agents={agents}
-                selectedItems={selectedItems}
-                onToggleItem={handleToggleItem}
-              />
-            </div>
-          )}
+        {activeTab === 'accommodation' && (
+          <section className={tabPanelClass}>
+            <TabContent
+              sectionKey="accommodation"
+              data={currentData.accommodation}
+              duration={duration}
+              agents={agents}
+              selectedItems={selectedItems}
+              onToggleItem={handleToggleItem}
+            />
+          </section>
+        )}
 
-          {/* EKRAN 5: ATRAKCJE */}
-          {activeTab === 'attractions' && (
-            <div className="flex flex-col gap-4 flex-1">
-              <TabContent
-                sectionKey="attractions"
-                data={currentData.attractions}
-                duration={duration}
-                agents={agents}
-                selectedItems={selectedItems}
-                onToggleItem={handleToggleItem}
-              />
-            </div>
-          )}
+        {activeTab === 'attractions' && (
+          <section className={tabPanelClass}>
+            <TabContent
+              sectionKey="attractions"
+              data={currentData.attractions}
+              duration={duration}
+              agents={agents}
+              selectedItems={selectedItems}
+              onToggleItem={handleToggleItem}
+            />
+          </section>
+        )}
 
-          {/* EKRAN 6: DEDYKOWANA MAPA PANORAMICZNA */}
-          {activeTab === 'map' && (
-            <div className="w-full h-[650px] rounded-sm overflow-hidden border border-[#005f73]/60 relative flex flex-col flex-1">
+        {activeTab === 'map' && (
+          <section className={tabPanelClass}>
+            <div className="w-full h-[650px] rounded-sm overflow-hidden border border-[#005f73]/60 relative">
               <TacticalMap country={country} city={city} selectedItems={selectedItems} />
             </div>
-          )}
+          </section>
+        )}
 
-          {/* EKRAN 7: PAMIĘĆ EXPEDYCJI I NOTATNIK */}
-          {activeTab === 'expedition' && (
-            <div className="w-full flex-1 flex flex-col">
-              <ExpeditionNotepad country={country} />
-            </div>
-          )}
-        </section>
+        {activeTab === 'expedition' && (
+          <section className={tabPanelClass}>
+            <ExpeditionNotepad country={country} />
+          </section>
+        )}
 
-        {/* Globalne Narzędzia pomocnicze (Wyciągnięte na sam dół jako niezależny segment) */}
-        <footer className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2 pb-8 shrink-0">
+        <footer className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 pb-8 shrink-0">
           <div className="border border-[#005f73] bg-dark-panel p-5 rounded-sm shadow-[0_0_15px_rgba(0,95,115,0.2)]">
             <CurrencyCalculator country={country} />
           </div>
           <div className="border border-[#005f73] bg-dark-panel p-5 rounded-sm shadow-[0_0_15px_rgba(0,95,115,0.2)]">
+            <RulesAssistant country={country} />
+          </div>
+        </footer>
+      </div>
+    </div>
+  );
+}

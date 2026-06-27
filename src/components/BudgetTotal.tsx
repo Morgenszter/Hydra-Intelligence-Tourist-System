@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { CountryKey, countryPricing, TierItem } from '../data/pricingData';
-import { Wallet, TrendingUp, Users } from 'lucide-react';
+import { Wallet, Users } from 'lucide-react';
 
 interface BudgetTotalProps {
   country: CountryKey;
@@ -10,7 +10,7 @@ interface BudgetTotalProps {
 }
 
 export default function BudgetTotal({ country, duration, agents, selectedItems }: BudgetTotalProps) {
-  const { totalCost, dailyPerAgent, itemCount } = useMemo(() => {
+  const { totalBudget, dailyPerAgent, itemCount } = useMemo(() => {
     const data = countryPricing[country];
     const allItems: { item: TierItem; section: string }[] = [];
 
@@ -21,19 +21,24 @@ export default function BudgetTotal({ country, duration, agents, selectedItems }
       });
     });
 
-    let total = 0;
+    const safeAgents = Math.max(agents, 1);
+    const safeDuration = Math.max(duration, 1);
+
+    let groupDailyTotal = 0;
     let count = 0;
+
     selectedItems.forEach((name) => {
       const found = allItems.find((a) => a.item.name === name);
       if (found) {
-        total += found.item.pricePerDay * agents * duration;
+        groupDailyTotal += found.item.pricePerDay * safeAgents;
         count++;
       }
     });
 
-    const daily = count > 0 ? total / duration / agents : 0;
+    const dailyPerAgent = count > 0 ? groupDailyTotal / safeAgents : 0;
+    const totalBudget = dailyPerAgent * safeAgents * safeDuration;
 
-    return { totalCost: total, dailyPerAgent: daily, itemCount: count };
+    return { totalBudget, dailyPerAgent, itemCount: count };
   }, [country, duration, agents, selectedItems]);
 
   return (
@@ -70,7 +75,7 @@ export default function BudgetTotal({ country, duration, agents, selectedItems }
               Całkowity budżet
             </span>
             <span className="text-[24px] font-bold text-gold-accent font-tech">
-              {totalCost.toFixed(0)} PLN
+              {totalBudget.toFixed(0)} PLN
             </span>
           </div>
         </div>
