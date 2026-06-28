@@ -229,7 +229,7 @@ export default function App() {
 
         <footer className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 pb-8 shrink-0">
           <div className="border border-[#005f73] bg-dark-panel p-5 rounded-sm shadow-[0_0_15px_rgba(0,95,115,0.2)]">
-            <CurrencyCalculator country={country} />
+            <CurrencyCalculator />
           </div>
           <div className="border border-[#005f73] bg-dark-panel p-5 rounded-sm shadow-[0_0_15px_rgba(0,95,115,0.2)]">
             <RulesAssistant country={country} />

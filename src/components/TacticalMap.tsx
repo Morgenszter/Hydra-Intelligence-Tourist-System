@@ -15,7 +15,7 @@ interface TacticalMapProps {
   selectedItems: Set<string>;
 }
 
-export default function TacticalMap({ country, city, selectedItems }: TacticalMapProps) {
+export default function TacticalMap({ country, city }: TacticalMapProps) {
   const [waypoints, setWaypoints] = useState<Waypoint[]>([]);
   const [showFree, setShowFree] = useState(true);
   const [showMid, setShowMid] = useState(true);
