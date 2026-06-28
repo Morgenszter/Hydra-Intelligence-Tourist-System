@@ -1,0 +1,272 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --al-teal: #005f73;
+  --al-cyan: #00DAFF;
+  --al-dark: #001219;
+  --al-silver: #e6f5f5;
+  --al-panel-bg: rgba(0, 15, 22, 0.94);
+}
+
+* { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+  user-select: none; 
+}
+
+body {
+  background-color: transparent;
+  color: var(--al-silver);
+  font-family: 'Courier New', Courier, monospace;
+  overflow: hidden; 
+  padding: 10px; 
+  height: 100vh;
+  width: 100vw;
+}
+
+/* [WARHAMMER v300: BASECOAT, COATING & SHADING] Wielowarstwowy shader pancerza */
+.app-window {
+  height: calc(100vh - 20px); 
+  width: calc(100vw - 20px); 
+  display: flex; 
+  flex-direction: column; 
+  position: relative; 
+  z-index: 1;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.95); 
+  overflow: hidden;
+  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M20 0 L40 20 L20 40 L0 20 Z' fill='%23001219' stroke='%23005f73' stroke-width='1.2'/%3E%3Cpath d='M20 10 L30 20 L20 30 L10 20 Z' fill='%23002d38' stroke='%2300daff' stroke-width='0.6' opacity='0.35'/%3E%3C/svg%3E"), 
+              linear-gradient(135deg, #001219 0%, #002129 100%);
+  background-size: auto; 
+  image-rendering: pixelated;
+}
+
+/* [AL] [KROK 7: HIGHLIGHT] MONUMENTALNE TRÓJWYMIAROWE LOGO GŁÓWNE */
+h1.hud-text-3d-heavy {
+  text-shadow: 0 1px 0 #002d38, 
+               0 2px 0 #002129, 
+               0 3px 0 #00151a, 
+               0 4px 0 #000a0d, 
+               0 5px 2px rgba(0,0,0,0.95);
+  background: linear-gradient(to bottom, #00daff 0%, #005f73 50%, #001219 100%);
+  -webkit-background-clip: text; 
+  -webkit-text-fill-color: transparent;
+  font-family: monospace; 
+  font-weight: 900; 
+  font-size: 2.2rem; 
+  filter: drop-shadow(0 0 10px rgba(0, 218, 255, 0.4));
+}
+
+.title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 32px;
+  background: #12181F;
+  border-bottom: 1px solid #005f73;
+  user-select: none;
+  -webkit-app-region: drag; 
+}
+
+.window-controls {
+  display: flex;
+  height: 100%;
+  -webkit-app-region: no-drag; 
+}
+
+.window-controls button {
+  width: 45px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: monospace;
+  font-size: 11px;
+  color: #e6f5f5;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  -webkit-app-region: no-drag; 
+}
+
+.window-controls button:hover {
+  background: #005f73;
+  color: #ffffff;
+}
+
+.window-controls button.btn-close:hover {
+  background: #001219 !important; 
+  color: #ff3333 !important;      
+  text-shadow: 0 0 8px rgba(255, 51, 51, 0.8);
+}
+
+.hud-scroll-area {
+  flex: 1; 
+  overflow-y: auto; 
+  overflow-x: hidden; 
+  padding: 20px; 
+  padding-right: 40px; 
+  position: relative; 
+  z-index: 10;
+  pointer-events: none; 
+}
+
+.hud-scroll-area > * { 
+  pointer-events: auto; 
+} 
+
+.hud-scroll-area::-webkit-scrollbar { 
+  display: none; 
+}
+
+/* CZYTELNOŚĆ ODKAŻONA Z TŁA (Zmatowienie washem Drakenhof) */
+.hud-panel-3d {
+  background: var(--al-panel-bg); 
+  border: 1px solid #005f73;
+  box-shadow: inset 0 0 15px rgba(0, 218, 255, 0.2), 0 12px 30px rgba(0,0,0,0.95);
+  padding: 15px; 
+  margin-bottom: 15px;
+  backdrop-filter: blur(4px); 
+}
+
+/* [WARHAMMER v300: STORMHOST SILVER] Srebrne stawki z konturem */
+.hud-currency-3d {
+  color: var(--al-silver);
+  text-shadow: -1px -1px 0 #000, 
+                1px 1px 0 #000, 
+               -1px 1px 0 #000, 
+                1px -1px 0 #000, 
+                0 0 8px rgba(230, 245, 245, 0.6);
+  font-family: monospace; 
+  font-weight: 900;
+}
+
+.hud-text-3d-heavy {
+  text-shadow: 0 1px 0 #002d38, 0 2px 0 #002129, 0 3px 0 #00151a, 0 4px 0 #000a0d, 0 5px 2px rgba(0,0,0,0.95);
+  background: linear-gradient(to bottom, #005f73 0%, #004d5a 50%, #001219 100%);
+  -webkit-background-clip: text; 
+  -webkit-text-fill-color: transparent;
+  font-size: 1.1rem; 
+  font-weight: bold; 
+  text-transform: uppercase;
+}
+
+.hud-target-row {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  padding: 10px; 
+  border-bottom: 1px solid rgba(0, 95, 115, 0.2); 
+  cursor: pointer; 
+  transition: all 0.15s ease;
+  background: rgba(0, 12, 19, 0.6);
+}
+
+.hud-target-row:hover { 
+  background: rgba(0, 95, 115, 0.25); 
+}
+
+.hud-target-row.selected {
+  background: rgba(0, 95, 115, 0.25) !important; 
+  border: 1px solid var(--al-cyan) !important; 
+  color: #fff !important;
+}
+
+.hud-egress-btn {
+  display: inline-block;
+  color: var(--al-silver); 
+  background: rgba(0, 95, 115, 0.3);
+  text-decoration: none; 
+  font-family: monospace;
+  font-weight: 900;
+  font-size: 0.8rem; 
+  border: 1px solid var(--al-cyan); 
+  padding: 10px 16px; 
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: center;
+  text-shadow: 0 0 5px var(--al-cyan);
+}
+
+.hud-egress-btn:hover { 
+  background: rgba(0, 218, 25, 0.2); 
+  box-shadow: 0 0 12px var(--al-cyan);
+  color: #fff;
+}
+
+.hud-intel-overlay-panel {
+  border-left: 3px solid var(--al-cyan);
+}
+
+.grid-menu { 
+  display: grid; 
+  grid-template-columns: repeat(5, 1fr); 
+  gap: 8px; 
+}
+
+.grid-menu.budget { 
+  grid-template-columns: repeat(3, 1fr); 
+}
+
+.menu-btn {
+  background: rgba(0, 18, 25, 0.8); 
+  border: 1px solid var(--al-teal); 
+  color: var(--al-silver);
+  padding: 8px; 
+  cursor: pointer; 
+  text-align: center; 
+  text-transform: uppercase; 
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 0.75rem;
+  transition: all 0.15s ease;
+}
+
+.menu-btn:hover {
+  background: rgba(0, 95, 115, 0.4);
+}
+
+.menu-btn.active { 
+  background: var(--al-teal); 
+  color: #fff; 
+  box-shadow: 0 0 10px var(--al-teal); 
+}
+
+select.menu-btn {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M0 3 L5 8 L10 3 Z' fill='%23e6f5f5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px;
+  padding-right: 30px;
+}
+
+#three-canvas-container {
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  z-index: 0; 
+  pointer-events: auto; 
+  background: #000;
+}
+
+.hud-budget-sentinel {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 16px;
+  z-index: 30;
+  pointer-events: none;
+}
+
+@media (max-width: 1024px) {
+  .hud-scroll-area {
+    padding-right: 20px;
+  }
+}
