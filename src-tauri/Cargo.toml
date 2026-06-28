@@ -1,0 +1,15 @@
+[package]
+name = "hydra-intelligence-tourist-system"
+version = "1.1.0"
+description = "Hydra Intelligence Operational HUD"
+authors = ["Agent"]
+edition = "2021"
+rust-version = "1.77"
+
+[build-dependencies]
+tauri-build = { version = "2.0.0", features = [] }
+
+[dependencies]
+tauri = { version = "2.0.0", features = [] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
